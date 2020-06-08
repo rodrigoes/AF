@@ -12,5 +12,4 @@ public class PraticandoApiApplicationTests {
 	@Test
 	public void contextLoads() {
 	}
-
 }

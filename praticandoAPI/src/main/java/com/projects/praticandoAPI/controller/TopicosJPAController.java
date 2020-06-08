@@ -6,10 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.projects.praticandoAPI.controller.dto.TopicoDto;
@@ -20,6 +17,7 @@ import com.projects.praticandoAPI.repository.CursoRepository;
 import com.projects.praticandoAPI.repository.TopicoRepository;
 
 @RestController
+@RequestMapping("/topic")
 public class TopicosJPAController {
 	
 	@Autowired
@@ -28,15 +26,15 @@ public class TopicosJPAController {
 	@Autowired
 	private CursoRepository cursoRepository;
 
-	@RequestMapping("/topicosJPA")
+	@GetMapping("/all")
 	public List<TopicoDto> lista(String nomeCurso) {
+		List<Topico> topicos;
 		if (nomeCurso == null) {
-			List<Topico> topicos = topicoRepository.findAll();
-			return TopicoDto.converter(topicos);
+			topicos = topicoRepository.findAll();
 		} else {
-			List<Topico> topicos = topicoRepository.findByCursoNome(nomeCurso);
-			return TopicoDto.converter(topicos);
+			topicos = topicoRepository.findByCursoNome(nomeCurso);
 		}
+		return TopicoDto.converter(topicos);
 	}
 	
 	@PostMapping
@@ -44,7 +42,7 @@ public class TopicosJPAController {
 		Topico topico = form.converter(cursoRepository);
 		topicoRepository.save(topico);
 		
-		URI uri = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
+		URI uri = uriBuilder.path("/topic/{id}").buildAndExpand(topico.getId()).toUri();
 		return ResponseEntity.created(uri).body(new TopicoDto(topico));
 	}
 }
